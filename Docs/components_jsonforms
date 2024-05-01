@@ -1,0 +1,112 @@
+# Frontend: Initial Components
+
+Components will be created for the chat interface and other internal views, using either class-based or functional components with hooks, based on your preference.
+
+--------------------------------------
+
+## Using JSON Forms in React
+
+`jsonforms.io`
+
+JSON Forms provides a way to rapidly develop forms based on JSON schema. It's particularly useful in scenarios where form structures are dynamic and subject to change, as it separates the form configuration from the code, allowing non-developers to alter the form layout without code modifications.
+
+### Steps to Integrate JSON Forms with React
+
+1. Install JSON Forms and Dependencies
+
+    `npm install @jsonforms/core @jsonforms/react @jsonforms/material-renderers`
+
+2. Define JSON Schema and UI Schema
+
+    - JSON Schema: Defines the data model of the form (e.g., fields, data types, validation rules).
+
+    - UI Schema: Controls how the data model should be rendered (e.g., layout, widgets).
+    For example, considering your "Staff Details" form:
+
+#### Staff_Details.json
+
+    ```json
+    {
+    "type": "object",
+    "properties": {
+        "firstName": {
+        "type": "string",
+        "title": "First Name"
+        },
+        "lastName": {
+        "type": "string",
+        "title": "Last Name"
+        },
+        // Add more fields as necessary
+    },
+    "required": ["firstName", "lastName"]
+    }
+    ```
+
+### UI Schema
+
+    ```json
+    {
+    "type": "VerticalLayout",
+    "elements": [
+        {
+        "type": "Control",
+        "scope": "#/properties/firstName"
+        },
+        {
+        "type": "Control",
+        "scope": "#/properties/lastName"
+        }
+    ]
+    }
+    ```
+
+3. Integrate the JSON form into components
+
+    ```js
+    import { JsonForms } from '@jsonforms/react';
+    import { materialRenderers, materialCells } from '@jsonforms/material-renderers';
+
+    const App = () => {
+    const data = {};
+    const [formData, setFormData] = React.useState(data);
+
+    return (
+        <JsonForms
+        schema={yourJsonSchema}
+        uischema={yourUiSchema}
+        data={formData}
+        renderers={materialRenderers}
+        cells={materialCells}
+        onChange={({ data, errors }) => setFormData(data)}
+        />
+    );
+    }
+    ```
+
+4. Handle State and Data Submission
+
+    - The `onChange` prop allows you to manage the form data within your component's state, facilitating easy integration with Redux or Context API for state management across the application.
+
+
+#### 4. Integrate the Form Component into Your Application
+
+Finally, include the `UserForm` component in your application where you need the form to appear, such as within a specific route or a modal within your chat interface.
+
+**Integration in `App.js` or another component:**
+
+```js
+import React from 'react';
+import UserForm from './UserForm'; // make sure the path is correct
+
+function App() {
+  return (
+    <div className="App">
+      <h1>User Details Form</h1>
+      <UserForm />
+    </div>
+  );
+}
+
+export default App;
+```

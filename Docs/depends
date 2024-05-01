@@ -1,0 +1,152 @@
+# BAU Commit o8
+
+## Backend: Basic Controllers
+
+I'll draft pseudocode for basic user and activity controllers.
+
+## Backend: Entity Framework Setup
+
+```txt
+cd BackendRepo
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Design
+# Setup the DbContext and migration scripts
+```
+
+
+## Frontend: React Setup
+
+`npx create-react-app FrontendRepo`
+
+
+## Frontend: React Router
+`cd FrontendRepo`
+`npm install react-router-dom`
+
+## Basic routing setup in App.js:
+
+```js
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+function App() {
+  return (
+    <Router>
+      <Switch>
+        <Route path="/" exact component={Home} />
+        <Route path="/chat" component={Chat} />
+        // Additional routes as neededls
+      </Switch>
+    </Router>
+  );
+}
+```
+
+## Frontend: State Management
+
+Which option would you prefer for state management, React Context API or Redux? Each has its benefits depending on the complexity and scale of your application. Once decided, I can provide specific setup instructions and example code.
+
+## Frontend: Initial Components
+
+Components will be created for the chat interface and other internal views, using either class-based or functional components with hooks, based on your preference.
+
+----------------------------------------------
+
+## Steps to Generate Boilerplate for New Forms
+
+1. Create a Generic Form Component
+
+  **Generic Form Component (`DynamicForm.js`):**
+
+  ```javascript
+  import React, { useState } from 'react';
+  import { JsonForms } from '@jsonforms/react';
+  import { materialRenderers, materialCells } from '@jsonforms/material-renderers';
+
+  const DynamicForm = ({ schema, uischema }) => {
+    const [formData, setFormData] = useState({});
+
+    return (
+      <div>
+        <JsonForms
+          schema={schema}
+          uischema={uischema}
+          data={formData}
+          renderers={materialRenderers}
+          cells={materialCells}
+          onChange={({ data }) => setFormData(data)}
+        />
+        <pre>{JSON.stringify(formData, null, 2)}</pre> {/* This line is for debugging */}
+      </div>
+    );
+  };
+
+  export default DynamicForm;
+
+  ```
+
+2. Store Schemas in a Manageable Way
+
+  **Directory Structure:**
+
+  ```bash
+  /src
+    /schemas
+      /userDetails
+        - schema.json
+        - uiSchema.json
+      /contactDetails
+        - schema.json
+        - uiSchema.json
+      /paymentDetails
+        - schema.json
+        - uiSchema.json
+
+  ```
+
+3. Dynamic Loading of Schemas
+
+**Schema Loader (`schemaLoader.js`):**
+
+```js
+// Async function to dynamically import schemas based on form type
+export const loadSchema = async (formType) => {
+  const schema = await import(`./schemas/${formType}/schema.json`);
+  const uiSchema = await import(`./schemas/${formType}/uiSchema.json`);
+  return { schema: schema.default, uiSchema: uiSchema.default };
+};
+
+```
+4. Use the Generic Form Component
+
+**Example Usage in App.js:**
+
+```js
+import React, { useEffect, useState } from 'react';
+import DynamicForm from './components/DynamicForm';
+import { loadSchema } from './schemaLoader';
+
+function App() {
+  const [formType, setFormType] = useState('userDetails'); // example form type
+  const [schemaData, setSchemaData] = useState({ schema: {}, uiSchema: {} });
+
+  useEffect(() => {
+    loadSchema(formType).then(data => {
+      setSchemaData(data);
+    });
+  }, [formType]);
+
+  return (
+    <div className="App">
+      <h1>Dynamic JSON Forms</h1>
+      <DynamicForm schema={schemaData.schema} uischema={schemaData.uiSchema} />
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+### Conclusion
+
+This setup provides a flexible way to add and manage multiple forms in your application using JSON Forms. You can easily add new forms by creating new schema files and adjusting the formType state. This approach minimizes boilerplate and maximizes reusability, helping you scale your application with ease.
