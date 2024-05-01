@@ -1,0 +1,18 @@
+C:.
+├───BackendRepo
+│   │   .gitignore
+│   │   README.md
+│   │
+│   ├───docs
+│   ├───scripts
+│   ├───src
+│   └───tests
+└───FrontendRepo
+    │   .gitignore
+    │   README.md
+    │
+    ├───docs
+    ├───public
+    ├───src
+    ├───styles
+    └───tests
