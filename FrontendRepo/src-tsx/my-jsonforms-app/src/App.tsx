@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { JsonForms, JsonFormsInit } from '@jsonforms/react';
+import { JsonForms } from '@jsonforms/react';
 import {
   materialRenderers,
   materialCells,
